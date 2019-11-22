@@ -1,0 +1,43 @@
+{
+  "name": "@eklingen/vinyl-stream-optimize-images",
+  "version": "1.0.0",
+  "description": "Small vinyl-stream wrapper -aka Gulp plugin- for image optimiation utilities.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eklingen/vinyl-stream-optimize-images.git"
+  },
+  "author": "Elco Klingen",
+  "license": "MIT",
+  "homepage": "https://github.com/eklingen/vinyl-stream-optimize-images#readme",
+  "bugs": {
+    "url": "https://github.com/eklingen/vinyl-stream-optimize-images/issues"
+  },
+  "keywords": [
+    "vinyl",
+    "stream",
+    "gulp",
+    "optimize",
+    "images",
+    "jpegoptim",
+    "pngquant",
+    "svgo"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=12.13.0"
+  },
+  "scripts": {
+    "test": "echo 'No tests have been written yet!'"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prefer-object-spread": "^1.2.1",
+    "eslint-plugin-simple-import-sort": "^4.0.0",
+    "eslint-plugin-smells": "^1.0.1"
+  },
+  "dependencies": {
+    "svgo": "^1.3.2"
+  }
+}

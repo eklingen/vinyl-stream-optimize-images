@@ -83,10 +83,13 @@ const DEFAULT_OPTIONS = {
   }
 }
 
-const binaryPaths = {
-  jpegoptim: join(process.cwd(), `vendor/${platform() / imageoptim}`) || '',
-  pngquant: join(process.cwd(), `vendor/${platform() / pngquant}`) || ''
+const tryPath = str => {
+  const path = join(module.path, `../vendor/${platform()}/${str}`)
+  return existsSync(path) ? path : ''
 }
+
+const jpegoptim = tryPath('jpegoptim')
+const pngquant = tryPath('pngquant')
 
 async function runBinary (buffer, binary = '', args = [], maxBuffer) {
   if (!binary || !args.length) {
@@ -198,9 +201,9 @@ function optimizeImages (options = {}) {
     if ((file.extname === '.svg') && isSVG(contents)) {
       result = await runSVGO(contents, options.svgo)
     } else if ((file.extname === '.jpg' || file.extname === '.jpeg') && isJPG(file.contents)) {
-      result = await runBinary(file.contents, binaryPaths.jpegoptim, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
+      result = await runBinary(file.contents, jpegoptim, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
     } else if (file.extname === '.png' && isPNG(file.contents)) {
-      result = await runBinary(file.contents, binaryPath.pngquant, [...pngquantArgs(options.optipng)], options.maxBuffer)
+      result = await runBinary(file.contents, pngquant, [...pngquantArgs(options.optipng)], options.maxBuffer)
     }
 
     if (result && result.length < (oldLength - options.minDecrease)) {

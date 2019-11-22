@@ -1,11 +1,11 @@
 // Small vinyl-stream wrapper -aka Gulp plugin- for optimizing images.
 // Jpegoptim, Optipng, Svgo
 
-const { extname, relative, join } = require('path')
-const { Transform, Readable } = require('stream')
 const { exec } = require('child_process')
-const { platform } = require('os')
 const { existsSync } = require('fs')
+const { extname, relative, join } = require('path')
+const { platform } = require('os')
+const { Transform, Readable } = require('stream')
 
 const isJPG = buffer => buffer.length >= 3 && buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255
 const isPNG = buffer => buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47 && buffer[4] === 0x0D && buffer[5] === 0x0A && buffer[6] === 0x1A && buffer[7] === 0x0A
@@ -83,31 +83,9 @@ const DEFAULT_OPTIONS = {
   }
 }
 
-const binaryPathCache = {}
-
-function binaryPath (str) {
-  if (pathCache[str]) {
-    return pathCache[str]
-  }
-
-  const path = join(process.cwd(), `gulp/stream-utilities/vendor/${platform()}/${str}`)
-
-  if (existsSync(path)) {
-    pathCache[str] = path
-  }
-
-  return path
-}
-
-async function runSVGO (string = '', options = {}) {
-  options = { ...DEFAULT_OPTIONS.svgo, ...options }
-
-  const SVGO = require('svgo')
-  const svgo = new SVGO(options)
-
-  result = await svgo.optimize(string)
-
-  return result.data
+const binaryPaths = {
+  jpegoptim: join(process.cwd(), `vendor/${platform() / imageoptim}`) || '',
+  pngquant: join(process.cwd(), `vendor/${platform() / pngquant}`) || ''
 }
 
 async function runBinary (buffer, binary = '', args = [], maxBuffer) {
@@ -128,6 +106,17 @@ async function runBinary (buffer, binary = '', args = [], maxBuffer) {
       reject(error)
     }
   })
+}
+
+async function runSVGO (string = '', options = {}) {
+  options = { ...DEFAULT_OPTIONS.svgo, ...options }
+
+  const SVGO = require('svgo')
+  const svgo = new SVGO(options)
+
+  result = await svgo.optimize(string)
+
+  return result.data
 }
 
 function jpegoptimArgs (options = {}) {
@@ -209,9 +198,9 @@ function optimizeImages (options = {}) {
     if ((file.extname === '.svg') && isSVG(contents)) {
       result = await runSVGO(contents, options.svgo)
     } else if ((file.extname === '.jpg' || file.extname === '.jpeg') && isJPG(file.contents)) {
-      result = await runBinary(file.contents, binaryPath('jpegoptim'), [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
+      result = await runBinary(file.contents, binaryPaths.jpegoptim, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
     } else if (file.extname === '.png' && isPNG(file.contents)) {
-      result = await runBinary(file.contents, binaryPath('pngquant'), [...pngquantArgs(options.optipng)], options.maxBuffer)
+      result = await runBinary(file.contents, binaryPath.pngquant, [...pngquantArgs(options.optipng)], options.maxBuffer)
     }
 
     if (result && result.length < (oldLength - options.minDecrease)) {

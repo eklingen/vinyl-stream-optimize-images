@@ -1,6 +1,7 @@
 
 # Changelog
 
+v1.0.5 - Updated `pngquant` to v2.12.5
 v1.0.4 - Internal refactoring
 v1.0.3 - Added licenses for `pngquant` and `jpegoptim`
 v1.0.2 - Vendor paths fixed

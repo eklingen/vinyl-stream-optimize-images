@@ -11,6 +11,11 @@ const isJPG = buffer => buffer.length >= 3 && buffer[0] === 255 && buffer[1] ===
 const isPNG = buffer => buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47 && buffer[4] === 0x0D && buffer[5] === 0x0A && buffer[6] === 0x1A && buffer[7] === 0x0A
 const isSVG = buffer => buffer.toString('utf8').indexOf('<svg') !== -1
 
+const BINARY_VERSIONS = {
+  jpegoptim: '1.4.6',
+  pngquant: '2.12.5'
+}
+
 const DEFAULT_OPTIONS = {
   swallowUnchanged: true,
   minDecrease: 16 * 1024, // 16KB
@@ -84,12 +89,15 @@ const DEFAULT_OPTIONS = {
 }
 
 const tryPath = name => {
-  const path = join(module.path, `/vendor/${name}/${platform()}-${arch()}/${name}`)
+  name = platform() === 'win32' ? `${name}.exe` : name
+  const path = join(module.path, `/vendor/${name}-${BINARY_VERSIONS[name]}/${platform()}-${arch()}/${name}`)
   return existsSync(path) ? path : ''
 }
 
 const jpegoptim = tryPath('jpegoptim')
 const pngquant = tryPath('pngquant')
+
+console.log(jpegoptim, pngquant)
 
 async function runBinary (buffer, binary = '', args = [], maxBuffer) {
   if (!binary || !args.length) {

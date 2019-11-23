@@ -89,8 +89,8 @@ const DEFAULT_OPTIONS = {
 }
 
 const tryPath = name => {
-  name = platform() === 'win32' ? `${name}.exe` : name
-  const path = join(module.path, `/vendor/${name}-${BINARY_VERSIONS[name]}/${platform()}-${arch()}/${name}`)
+  const ext = platform() === 'win32' ? `${name}.exe` : ''
+  const path = join(module.path, `/vendor/${name}-${BINARY_VERSIONS[name]}/${platform()}-${arch()}/${name}${ext}`)
   return existsSync(path) ? path : ''
 }
 

@@ -104,9 +104,9 @@ async function runBinary (buffer, binary = '', args = [], maxBuffer) {
     return
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     try {
-      const child = exec(`${binary} ${args.join(' ')}`, { encoding: null, maxBuffer: maxBuffer, windowsHide: true }, (err, stdout, stderr) => Promise.resolve(err ? stderr : stdout))
+      const child = exec(`${binary} ${args.join(' ')}`, { encoding: null, maxBuffer: maxBuffer, windowsHide: true }, (err, stdout, stderr) => resolve(err ? stderr : stdout))
       child.stdin.on('error', error => console.log('Could not pipe to executable. Try to `chmod +x` it.') && console.log(error))
 
       const stdin = new Readable({ encoding: null, maxBuffer: maxBuffer })
@@ -114,7 +114,7 @@ async function runBinary (buffer, binary = '', args = [], maxBuffer) {
       stdin.push(null)
       stdin.pipe(child.stdin)
     } catch (error) {
-      Promise.reject(error)
+      reject(error)
     }
   })
 }

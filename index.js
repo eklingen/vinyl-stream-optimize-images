@@ -2,7 +2,6 @@
 // Jpegoptim, Optipng, Svgo
 
 const { exec } = require('child_process')
-const { existsSync } = require('fs')
 const { join } = require('path')
 const { platform, arch } = require('os')
 const { Transform, Readable } = require('stream')
@@ -11,10 +10,8 @@ const isJPG = buffer => buffer.length >= 3 && buffer[0] === 255 && buffer[1] ===
 const isPNG = buffer => buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47 && buffer[4] === 0x0D && buffer[5] === 0x0A && buffer[6] === 0x1A && buffer[7] === 0x0A
 const isSVG = buffer => buffer.toString('utf8').indexOf('<svg') !== -1
 
-const BINARY_VERSIONS = {
-  jpegoptim: '1.4.6',
-  pngquant: '2.12.5'
-}
+const jpegoptimBinary = join(module.path, `/vendor/jpegoptim-1.4.6/${platform()}-${arch()}/jpegoptim${platform() === 'win32' ? '.exe' : ''}`)
+const pngquantBinary = join(module.path, `/vendor/pngquant-2.12.5/${platform()}-${arch()}/jpegoptim${platform() === 'win32' ? '.exe' : ''}`)
 
 const DEFAULT_OPTIONS = {
   swallowUnchanged: true,
@@ -88,19 +85,8 @@ const DEFAULT_OPTIONS = {
   }
 }
 
-const tryPath = name => {
-  const ext = platform() === 'win32' ? `${name}.exe` : ''
-  const path = join(module.path, `/vendor/${name}-${BINARY_VERSIONS[name]}/${platform()}-${arch()}/${name}${ext}`)
-  return existsSync(path) ? path : ''
-}
-
-const jpegoptim = tryPath('jpegoptim')
-const pngquant = tryPath('pngquant')
-
-console.log(jpegoptim, pngquant)
-
 async function runBinary (buffer, binary = '', args = [], maxBuffer) {
-  if (!binary || !args.length) {
+  if (!binary) {
     return
   }
 
@@ -205,9 +191,9 @@ function optimizeImages (options = {}) {
     if ((file.extname === '.svg') && isSVG(contents)) {
       result = await runSVGO(contents, options.svgo)
     } else if ((file.extname === '.jpg' || file.extname === '.jpeg') && isJPG(file.contents)) {
-      result = await runBinary(file.contents, jpegoptim, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
+      result = await runBinary(file.contents, jpegoptimBinary, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
     } else if (file.extname === '.png' && isPNG(file.contents)) {
-      result = await runBinary(file.contents, pngquant, [...pngquantArgs(options.optipng)], options.maxBuffer)
+      result = await runBinary(file.contents, pngquantBinary, [...pngquantArgs(options.optipng)], options.maxBuffer)
     }
 
     if (result && result.length < (oldLength - options.minDecrease)) {

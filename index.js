@@ -1,6 +1,7 @@
 // Small vinyl-stream wrapper -aka Gulp plugin- for optimizing images.
 // Jpegoptim, Optipng, Svgo
 
+const { access, chmod } = require('fs').promises
 const { exec } = require('child_process')
 const { join } = require('path')
 const { platform, arch } = require('os')
@@ -85,10 +86,25 @@ const DEFAULT_OPTIONS = {
   }
 }
 
+async function chmodBinaries () {
+  if (platform() === 'win32') {
+    return
+  }
+
+  try {
+    await access(jpegoptimBinary, 1, async error => !error || chmod(jpegoptimBinary, 0o744))
+    await access(pngquantBinary, 1, async error => !error || chmod(pngquantBinary, 0o744))
+  } catch (e) {
+    //
+  }
+}
+
 async function runBinary (buffer, binary = '', args = [], maxBuffer) {
   if (!binary) {
     return
   }
+
+  await chmodBinaries()
 
   return new Promise((resolve, reject) => {
     try {

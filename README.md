@@ -1,5 +1,5 @@
 
-# Small vinyl-stream wrapper -aka Gulp plugin- for image optimization utilities.
+# Small vinyl-stream wrapper -aka Gulp plugin- for image optimization utilities
 
 Run image optimization utilities within your streams. Contains `jpegoptim` and `pngquant` binaries within the package for *win32* (ie: Windows), *darwin* (ie: OS-X) and *linux*. Has `svgo` as a dependency.
 
@@ -11,7 +11,7 @@ Run image optimization utilities within your streams. Contains `jpegoptim` and `
 
 ## Usage
 
-```
+```javascript
 const optimizeImages = require('@eklingen/vinyl-stream-optimize-images')
 stream.pipe(optimizeImages())
 ```
@@ -24,7 +24,7 @@ You have the following options:
 
 This will determine if unchanged files are removed from the stream. Default: `true`.
 
-```
+```javascript
 optimizeImages({
   swallowUnchanged: true
 })
@@ -34,7 +34,7 @@ optimizeImages({
 
 This will determine the minimum size decrease to mark the file as "changed". Default is `16 * 1024`, or 16KB.
 
-```
+```javascript
 optimizeImages({
   minDifference: 16 * 1024
 })
@@ -44,7 +44,7 @@ optimizeImages({
 
 This will determine the maximum buffer size to use. Default is `64 * 1024 * 1024`, or 64MB.
 
-```
+```javascript
 optimizeImages({
   maxBuffer: 64 * 1024 * 1024
 })
@@ -54,7 +54,7 @@ optimizeImages({
 
 These options are passed to `jpegoptim`. Run `yarn jpegoptim --help` for more details.
 
-```
+```javascript
 optimizeImages({
   jpegoptim: {
     stripComments: true, // Strip comments
@@ -73,7 +73,7 @@ optimizeImages({
 
 These options are passed to `pngquant`. Run `yarn pngquant --help` for more details.
 
-```
+```javascript
 optimizeImages({
   pngquant: {
     quality: [30, 50], // Quality min/max 0-100
@@ -88,7 +88,7 @@ optimizeImages({
 
 These options are passed to `svgo`. Run `yarn svgo --help` for more details.
 
-```
+```javascript
 optimizeImages({
   svgo: {
     plugins: [

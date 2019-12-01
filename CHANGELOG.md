@@ -1,6 +1,7 @@
 
 # Changelog
 
+v1.1.0 - First release with a tag
 v1.0.9 - Fixed issue with binaries.
 v1.0.8 - Removed all sync calls
 v1.0.7 - Promise-related fix

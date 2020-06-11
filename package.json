@@ -1,6 +1,6 @@
 {
   "name": "@eklingen/vinyl-stream-optimize-images",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Small vinyl-stream wrapper -aka Gulp plugin- for image optimiation utilities.",
   "repository": {
     "type": "git",

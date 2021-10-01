@@ -1,6 +1,7 @@
 
 # Changelog
 
+v3.0.2 - Fixed bug with incorrectly calling SVGO
 v3.0.1 - Upgrade dependencies (major svgo version)
 v2.0.1 - Upgrade dependencies
 v2.0.0 - Upgrade node to v14 LTS

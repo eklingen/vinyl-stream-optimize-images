@@ -38,51 +38,60 @@ const DEFAULT_OPTIONS = {
   },
 
   svgo: {
+    multipass: false,
+    datauri: 'base64',
     plugins: [
-      { addAttributesToSVGElement: false },
-      { addClassesToSVGElement: false },
-      { cleanupAttrs: true },
-      { cleanupEnableBackground: true },
-      { cleanupIDs: true },
-      { cleanupListOfValues: true },
-      { cleanupNumericValues: true },
-      { collapseGroups: true },
-      { convertColors: { currentColor: true, names2hex: true, rgb2hex: true, shorthex: true, shortname: true } },
-      { convertPathData: true },
-      { convertShapeToPath: false },
-      { convertStyleToAttrs: true },
-      { convertTransform: true },
-      { mergePaths: false },
-      { minifyStyles: true },
-      { moveElemensAttrsToGroup: true },
-      { moveGroupAttrsToElements: false },
-      { removeAttrs: { attrs: '(stroke|fill)' } },
-      { removeComments: true },
-      { removeDesc: true },
-      { removeDimensions: false },
-      { removeDoctype: true },
-      { removeEditorsNSData: true },
-      { removeElementsByAttr: false },
-      { removeEmptyAttrs: true },
-      { removeEmptyContains: true },
-      { removeEmptyText: true },
-      { removeHiddenElems: true },
-      { removeMetadata: true },
-      { removeNonInheritableGroupAttrs: true },
-      { removeRasterImages: true },
-      { removeScriptElement: false },
-      { removeStyleElement: false },
-      { removeTitle: true },
-      { removeUnknownsAndDefaults: true },
-      { removeUnusedNS: true },
-      { removeUselessDefs: true },
-      { removeUselessStrokeAndFill: false },
-      { removeViewBox: false },
-      { removeXMLNS: false },
-      { removeXMLProcInst: true },
-      { sortAttrs: true }
+      // 'addAttributesToSVGElement',
+      // 'addClassesToSVGElement',
+      'cleanupAttrs',
+      'cleanupEnableBackground',
+      'cleanupIDs',
+      'cleanupListOfValues',
+      'cleanupNumericValues',
+      'collapseGroups',
+      { name: 'convertColors', params: { currentColor: true, names2hex: true, rgb2hex: true, shorthex: true, shortname: true } },
+      // 'ConvertEllipseToCircle',
+      'convertPathData',
+      // 'convertShapeToPath',
+      'convertStyleToAttrs',
+      'convertTransform',
+      'inlineStyles',
+      // 'mergePaths',
+      'mergeStyles',
+      'minifyStyles',
+      // 'moveGroupAttrsToElements',
+      // 'prefixIds',
+      // 'removeAttributesBySelector',
+      { name: 'removeAttrs', params: { attrs: '(stroke|fill)' } },
+      'removeComments',
+      'removeDesc',
+      // 'removeDimensions',
+      'removeDoctype',
+      'removeEditorsNSData',
+      // 'removeElementsByAttr',
+      'removeEmptyAttrs',
+      'removeEmptyContainers',
+      'removeEmptyText',
+      'removeHiddenElems',
+      'removeMetadata',
+      'removeNonInheritableGroupAttrs',
+      // 'remoceOffCanvasPaths',
+      'removeRasterImages',
+      // 'removeScriptElement',
+      // 'removeStyleElement',
+      'removeTitle',
+      'removeUnknownsAndDefaults',
+      'removeUnusedNS',
+      'removeUselessDefs',
+      // 'removeUselessStrokeAndFill',
+      // 'removeViewBox',
+      // 'removeXMLNS',
+      'removeXMLProcInst',
+      // 'reusePaths', TODO: Check if this can be safely enabled
+      'sortAttrs',
+      'sortDefsChildren'
     ],
-    js2svg: { pretty: true }
+    js2svg: { indent: 2, pretty: true }
   }
 }
 
@@ -124,9 +133,8 @@ async function runBinary (buffer, binary = '', args = [], maxBuffer) {
 async function runSVGO (string = '', options = {}) {
   options = { ...DEFAULT_OPTIONS.svgo, ...options }
 
-  const SVGO = require('svgo')
-  const svgo = new SVGO(options)
-  const result = await svgo.optimize(string)
+  const { optimize } = require('svgo')
+  const result = await optimize(string, options)
 
   return result.data
 }

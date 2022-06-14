@@ -30,7 +30,8 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "test": "echo '** TODO: Write tests! **'; echo 'Linting...'; eslint index.js --fix;"
+    "test": "echo '** TODO: Write tests! **'; echo 'Linting...'; eslint index.js --fix;",
+    "postinstall": "chmod +x vendor/**/*"
   },
   "dependencies": {
     "svgo": "^2.8.0"

@@ -1,8 +1,7 @@
 
 # Changelog
 
-v3.0.5 - DevEnv changes
-v3.0.4 - Try postinstall
+v3.0.4 - DevEnv changes
 v3.0.3 - Upgrade dependencies
 v3.0.2 - Fixed bug with incorrectly calling SVGO
 v3.0.1 - Upgrade dependencies (major svgo version)

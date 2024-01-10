@@ -8,7 +8,7 @@ const { platform, arch } = require('os')
 const { Transform, Readable } = require('stream')
 
 const isJPG = buffer => buffer.length >= 3 && buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255
-const isPNG = buffer => buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47 && buffer[4] === 0x0D && buffer[5] === 0x0A && buffer[6] === 0x1A && buffer[7] === 0x0A
+const isPNG = buffer => buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47 && buffer[4] === 0x0d && buffer[5] === 0x0a && buffer[6] === 0x1a && buffer[7] === 0x0a
 const isSVG = buffer => buffer.toString('utf8').indexOf('<svg') !== -1
 
 const jpegoptimBinary = join(module.path, `/vendor/jpegoptim-1.4.6/${platform()}-${arch()}/jpegoptim${platform() === 'win32' ? '.exe' : ''}`)
@@ -27,14 +27,14 @@ const DEFAULT_OPTIONS = {
     stripXMP: true,
     forceProgressive: true,
     max: null,
-    size: null
+    size: null,
   },
 
   pngquant: {
     quality: [30, 50],
     speed: 4,
     disableDithering: false,
-    strip: true
+    strip: true,
   },
 
   svgo: {
@@ -89,13 +89,13 @@ const DEFAULT_OPTIONS = {
       'removeXMLProcInst',
       // 'reusePaths', TODO: Check if this can be safely enabled
       'sortAttrs',
-      'sortDefsChildren'
+      'sortDefsChildren',
     ],
-    js2svg: { indent: 2, pretty: true }
-  }
+    js2svg: { indent: 2, pretty: true },
+  },
 }
 
-async function chmodBinaries () {
+async function chmodBinaries() {
   if (platform() === 'win32') {
     return
   }
@@ -108,7 +108,7 @@ async function chmodBinaries () {
   }
 }
 
-async function runBinary (buffer, binary = '', args = [], maxBuffer) {
+async function runBinary(buffer, binary = '', args = [], maxBuffer) {
   if (!binary) {
     return
   }
@@ -130,7 +130,7 @@ async function runBinary (buffer, binary = '', args = [], maxBuffer) {
   })
 }
 
-async function runSVGO (string = '', options = {}) {
+async function runSVGO(string = '', options = {}) {
   options = { ...DEFAULT_OPTIONS.svgo, ...options }
 
   const { optimize } = require('svgo')
@@ -139,7 +139,7 @@ async function runSVGO (string = '', options = {}) {
   return result.data
 }
 
-function jpegoptimArgs (options = {}) {
+function jpegoptimArgs(options = {}) {
   options = { ...DEFAULT_OPTIONS.jpegoptim, ...options }
 
   const args = ['--stdin', '--stdout']
@@ -179,7 +179,7 @@ function jpegoptimArgs (options = {}) {
   return args
 }
 
-function pngquantArgs (options = {}) {
+function pngquantArgs(options = {}) {
   options = { ...DEFAULT_OPTIONS.pngquant, ...options }
 
   const args = ['-']
@@ -203,16 +203,16 @@ function pngquantArgs (options = {}) {
   return args
 }
 
-function optimizeImages (options = {}) {
-  async function transform (file, encoding, callback) {
-    options = ({ ...DEFAULT_OPTIONS, ...options })
+function optimizeImages(options = {}) {
+  async function transform(file, encoding, callback) {
+    options = { ...DEFAULT_OPTIONS, ...options }
 
     const contents = file.contents.toString('utf8')
     const oldLength = contents.length
 
     let result
 
-    if ((file.extname === '.svg') && isSVG(contents)) {
+    if (file.extname === '.svg' && isSVG(contents)) {
       result = await runSVGO(contents, options.svgo)
     } else if ((file.extname === '.jpg' || file.extname === '.jpeg') && isJPG(file.contents)) {
       result = await runBinary(file.contents, jpegoptimBinary, [...jpegoptimArgs(options.jpegoptim)], options.maxBuffer)
@@ -220,7 +220,7 @@ function optimizeImages (options = {}) {
       result = await runBinary(file.contents, pngquantBinary, [...pngquantArgs(options.optipng)], options.maxBuffer)
     }
 
-    if (result && result.length < (oldLength - options.minDecrease)) {
+    if (result && result.length < oldLength - options.minDecrease) {
       file.contents = Buffer.from(result)
       return callback(null, file)
     }

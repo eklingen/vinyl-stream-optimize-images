@@ -1,6 +1,10 @@
 
 # Small vinyl-stream wrapper -aka Gulp plugin- for image optimization utilities
 
+> This project was originally developed independently and has been used in projects at [Fabrique](https//www.fabrique.nl) and [Q42](https://www.q42.nl).
+> It remains publicly available and can be forked or maintained independently if needed.
+> No guarantees are provided for long-term maintenance.
+
 Run image optimization utilities within your streams. Contains `jpegoptim` and `pngquant` binaries within the package for *win32* (ie: Windows), *darwin* (ie: OS-X) and *linux*. Has `svgo` as a dependency.
 
 > *NOTE:* No tests have been written yet!
